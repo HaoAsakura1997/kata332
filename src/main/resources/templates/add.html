@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add user</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+</head>
+<body>
+<form action="#" th:action = "@{/add}" th:object="${user}" method="post">
+    <label for= "name">NAME</label>
+    <input type="text" th:field="*{username}" id = "name" placeholder = "NAME">
+    <label for="surname">SURNAME</label>
+    <input type = "text" th:field = "*{surname}" id="surname" placeholder = "SURNAME">
+    <label for="age">AGE</label>
+    <input type = "text" th:field = "*{age}" id="age" placeholder = "AGE">
+    <input type = "submit" value="Add User">
+</form>
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Sign Out</button>
+</form>
+</body>
+</html>

@@ -6,8 +6,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.configs.WebSecurityConfig;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
@@ -24,6 +27,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @PersistenceContext
     private EntityManager em;
     private UserRepository userRepository;
+
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -60,17 +64,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User saveUser(User user) {
-        User newUser = findByUsername(user.getUsername());
-        if(newUser == null) {
-            return userRepository.save(user);
+    @Transactional
+    public User saveUser(User user, PasswordEncoder passwordEncoder) {
+        User user1 = findByUsername(user.getUsername());
+        if(user1 == null) {
+            User newUser = new User();
+            newUser.setUsername(user.getUsername());
+            newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+            newUser.setSurname(user.getSurname());
+            newUser.setAge(user.getAge());
+            return userRepository.save(newUser);
         }
-        newUser.setUsername(user.getUsername());
-        newUser.setPassword(user.getPassword());
-        return newUser;
+        return updateUser(user, passwordEncoder);
+    }
+
+    @Transactional
+    @Override
+    public User updateUser (User user, PasswordEncoder passwordEncoder) {
+        User update = findByUsername(user.getUsername());
+        update.setUsername(user.getUsername());
+        update.setPassword(passwordEncoder.encode(user.getPassword()));
+        update.setSurname(user.getSurname());
+        update.setAge(user.getAge());
+        return update;
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }

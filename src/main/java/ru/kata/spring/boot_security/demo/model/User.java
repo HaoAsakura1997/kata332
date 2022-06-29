@@ -20,7 +20,7 @@ public class User implements UserDetails {
     private String surname;
     private int age;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "users_roles",
                 joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
                 inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})

@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,26 +30,26 @@ public class UserController {
 
     @PostMapping("/admin/add")
     public String addUser(User user) {
-        userService.saveUser(user);
-        return "redirect:/showAllUsers";
+        userService.saveUser(user, new BCryptPasswordEncoder(12));
+        return "redirect:/admin/showAllUsers";
     }
 
     @GetMapping("/admin/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteById(id);
-        return "redirect:/showAllUsers";
+        return "redirect:/admin/showAllUsers";
     }
     @GetMapping("/admin/update/{id}")
     public String updateUserForm(@PathVariable Long id, Model model) {
         User user = userService.findById(id);
         model.addAttribute("user", user);
-        return "/update";
+        return "update";
     }
 
     @PostMapping("/admin/update")
     public String updateUser(User user) {
-        userService.saveUser(user);
-        return "redirect:/showAllUsers";
+        userService.updateUser(user, new BCryptPasswordEncoder(12));
+        return "redirect:/admin/showAllUsers";
     }
 
 
